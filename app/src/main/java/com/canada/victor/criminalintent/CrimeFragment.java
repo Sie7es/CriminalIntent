@@ -12,8 +12,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.UUID;
 
@@ -92,5 +90,12 @@ public class CrimeFragment extends Fragment {
         });
 
         return v;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+
     }
 }

@@ -23,9 +23,10 @@ import java.util.UUID;
  */
 
 
-public class CrimeListFragment extends Fragment{
+public class CrimeListFragment extends Fragment {
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
+    private Crime mCrime;
 
 
     @Nullable
@@ -41,23 +42,33 @@ public class CrimeListFragment extends Fragment{
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        updateUI();
+    }
+
     private void updateUI() {
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
 
-        mAdapter = new CrimeAdapter(crimes);
-        mCrimeRecyclerView.setAdapter(mAdapter);
+        if (mAdapter == null) {
+            mAdapter = new CrimeAdapter(crimes);
+            mCrimeRecyclerView.setAdapter(mAdapter);
+        } else {
+            mAdapter.notifyItemChanged(crimes.indexOf(mCrime));
+        }
     }
 
 
 
-
-
-    private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        private Crime mCrime;
+    
+    private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mTitleTextView;
         private TextView mDateTextView;
         private CheckBox mSolvedCheckBox;
+        private Crime mCrime;
 
         public CrimeHolder(View itemView) {
             super(itemView);
@@ -70,6 +81,7 @@ public class CrimeListFragment extends Fragment{
 
         public void bindCrime(Crime crime) {
             mCrime = crime;
+
             mTitleTextView.setText(mCrime.getTitle());
             mDateTextView.setText(mCrime.getDate().toString());
             mSolvedCheckBox.setChecked(mCrime.isSolved());
@@ -77,6 +89,7 @@ public class CrimeListFragment extends Fragment{
 
         @Override
         public void onClick(View v) {
+            CrimeListFragment.this.mCrime = mCrime;
             Intent intent = CrimeActivity.newIntent(getContext(), mCrime.getId());
             startActivity(intent);
         }
@@ -100,7 +113,6 @@ public class CrimeListFragment extends Fragment{
         @Override
         public void onBindViewHolder(CrimeHolder holder, int position) {
             Crime crime = mCrimes.get(position);
-
 
             holder.bindCrime(crime);
         }
