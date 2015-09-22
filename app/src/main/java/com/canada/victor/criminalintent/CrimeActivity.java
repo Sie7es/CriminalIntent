@@ -10,7 +10,7 @@ import android.support.v4.app.FragmentManager;
 import java.util.UUID;
 
 public class CrimeActivity extends SingleFragmentActivity {
-    private static final String EXTRA_CRIME_ID = "com.canada.victor.criminalintent.crime_id";
+    public static final String EXTRA_CRIME_ID = "com.canada.victor.criminalintent.crime_id";
 
 
     @Override
