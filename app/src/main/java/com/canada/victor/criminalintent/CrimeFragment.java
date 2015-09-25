@@ -1,6 +1,7 @@
 package com.canada.victor.criminalintent;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -32,8 +33,9 @@ public class CrimeFragment extends Fragment {
     private static final String TIME_FORMAT = "k:m";
     private static final String DIALOG_DATE = "DialogDate";
     private static final String DIALOG_TIME = "DialogTime";
-    private static final int REQUEST_DATE = 0;
+    public static final int REQUEST_DATE = 0;
     private static final int REQUEST_TIME = 1;
+
 
     private SimpleDateFormat df;
     private Crime mCrime;
@@ -90,10 +92,8 @@ public class CrimeFragment extends Fragment {
         mDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager manager = getFragmentManager();
-                DatePickerFragment dialog = DatePickerFragment.newInstance(mCrime.getDate());
-                dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
-                dialog.show(manager, DIALOG_DATE);
+                Intent intent = CrimeDateActivity.newInstance(getActivity(), mCrime.getDate());
+                startActivityForResult(intent, REQUEST_DATE);
             }
         });
 
