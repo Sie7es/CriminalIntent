@@ -24,6 +24,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.text.format.DateFormat;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
@@ -43,6 +44,7 @@ public class CrimeFragment extends Fragment {
     private static final int REQUEST_DATE = 0;
     private static final int REQUEST_TIME = 1;
     private static final int REQUEST_CONTACT = 2;
+    private static final int REQUEST_CONTACT_CALL = 3;
     private static final String ARG_CRIME_ID = "crime_id";
 
     private SimpleDateFormat df;
@@ -53,6 +55,7 @@ public class CrimeFragment extends Fragment {
     private CheckBox mSolvedCheckBox;
     private Button mReportButton;
     private Button mSuspectButton;
+    private Button mReportButtonCall;
 
     public static CrimeFragment newInstance(UUID crimeId) {
         Bundle args = new Bundle();
@@ -94,7 +97,7 @@ public class CrimeFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_item_remove_crime: {
-             CrimeLab.get(getActivity()).removeCrime(mCrime);
+                CrimeLab.get(getActivity()).removeCrime(mCrime);
                 getActivity().finish();
                 return true;
             }
@@ -108,7 +111,6 @@ public class CrimeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_crime, container, false);
-
 
 
         mTitleField = (EditText) v.findViewById(R.id.crime_title);
@@ -176,7 +178,7 @@ public class CrimeFragment extends Fragment {
                         .setSubject(getString(R.string.send_report))
                         .setChooserTitle(R.string.send_report)
                         .createChooserIntent();
-                
+
                 /*Intent i = new Intent(Intent.ACTION_SEND);
                 i.setType("text/plain");
                 i.putExtra(Intent.EXTRA_TEXT, getCrimeReport());
@@ -204,6 +206,15 @@ public class CrimeFragment extends Fragment {
         if (packageManager.resolveActivity(pickContact, PackageManager.MATCH_DEFAULT_ONLY) == null) {
             mSuspectButton.setEnabled(false);
         }
+
+        final Intent pickContactCall = new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+        mReportButtonCall = (Button) v.findViewById(R.id.crime_report_call);
+        mReportButtonCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(pickContactCall, REQUEST_CONTACT_CALL);
+            }
+        });
         return v;
     }
 
@@ -235,7 +246,7 @@ public class CrimeFragment extends Fragment {
         if (requestCode == REQUEST_CONTACT && data != null) {
             Uri contactUri = data.getData();
             //Specify wich fields you want your query to return values for
-            String[] queryFields = new String[] {
+            String[] queryFields = new String[]{
                     ContactsContract.Contacts.DISPLAY_NAME
             };
             //Perform your query - the contactUri is like a "where" cluase here
@@ -255,7 +266,32 @@ public class CrimeFragment extends Fragment {
             } finally {
                 c.close();
             }
+        }
 
+
+        if (requestCode == REQUEST_CONTACT_CALL && data != null) {
+            Uri contactUri = data.getData();
+
+            String[] query = new String[]{
+                    ContactsContract.CommonDataKinds.Phone.NUMBER
+            };
+
+            Cursor c = getActivity().getContentResolver().query(contactUri, query, null, null, null);
+
+            try {
+                if (c.getCount() == 0) {
+                    return;
+                }
+
+                c.moveToFirst();
+
+                String phone = c.getString(c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
+                Intent i = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phone));
+                startActivity(i);
+            } finally {
+                c.close();
+            }
         }
     }
 

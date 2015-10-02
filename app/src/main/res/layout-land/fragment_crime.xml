@@ -64,7 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:weightSum="2">
+        android:weightSum="3">
 
         <Button
             android:id="@+id/crime_suspect"
@@ -78,6 +78,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/crime_report_text"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/crime_report_call"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/send_report_phone"
             android:layout_weight="1"/>
 
     </LinearLayout>
