@@ -28,7 +28,6 @@ import android.widget.EditText;
 import android.text.format.DateFormat;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -46,12 +45,14 @@ public class CrimeFragment extends Fragment {
     private static final String TIME_FORMAT = "k:m";
     private static final String DIALOG_DATE = "DialogDate";
     private static final String DIALOG_TIME = "DialogTime";
+    private static final String DIALOG_IMAGE_ZOOM = "DialogImageZoom";
     private static final int REQUEST_DATE = 0;
     private static final int REQUEST_TIME = 1;
     private static final int REQUEST_CONTACT = 2;
     private static final int REQUEST_CONTACT_CALL = 3;
+    private static final int REQUEST_PHOTO = 4;
+    private static final int REQUEST_IMAGE_ZOOM = 5;
     private static final String ARG_CRIME_ID = "crime_id";
-    private static final int REQUEST_PHOTO = 2;
 
     private SimpleDateFormat df;
     private Crime mCrime;
@@ -248,6 +249,19 @@ public class CrimeFragment extends Fragment {
 
 
         mPhotoView = (ImageView) v.findViewById(R.id.crime_photo);
+        mPhotoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mPhotoFile.exists()) {
+                    FragmentManager manager = getFragmentManager();
+
+                    ImageZoomFragment dialog = ImageZoomFragment.newInstance(mPhotoFile);
+                    dialog.setTargetFragment(CrimeFragment.this, REQUEST_IMAGE_ZOOM);
+                    dialog.show(manager, DIALOG_IMAGE_ZOOM);
+
+                }
+            }
+        });
         updatePhotoView();
 
         return v;
@@ -329,7 +343,7 @@ public class CrimeFragment extends Fragment {
             }
         }
 
-        if (requestCode == REQUEST_PHOTO) {
+        if (requestCode == REQUEST_PHOTO || requestCode == REQUEST_IMAGE_ZOOM) {
             updatePhotoView();
         }
     }

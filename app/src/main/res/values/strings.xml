@@ -26,4 +26,6 @@
     <string name="crime_report_subject">CriminalIntent Crime Reports</string>
     <string name="send_report">Send crime report via</string>
     <string name="send_report_phone">Call criminal</string>
+
+    <string name="zomm_image_title">Criminal Image</string>
 </resources>
