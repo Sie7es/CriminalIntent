@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 import java.io.File;
@@ -37,13 +38,19 @@ public class ImageZoomFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        File file = (File) getArguments().getSerializable(ARG_ZOOM);
+        final File file = (File) getArguments().getSerializable(ARG_ZOOM);
 
         View v = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_zoom, null);
 
         mImageZoom = (ImageView) v.findViewById(R.id.image_zoom);
-        Bitmap bitmap = PictureUtils.getScaledBitmap(file.getPath(), getActivity());
-        mImageZoom.setImageBitmap(bitmap);
+        ViewTreeObserver observer = mImageZoom.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Bitmap bitmap = PictureUtils.getScaledBitmap(file.getPath(), mImageZoom.getMeasuredWidth(), mImageZoom.getMeasuredHeight());
+                mImageZoom.setImageBitmap(bitmap);
+            }
+        });
 
         return new AlertDialog.Builder(getActivity())
                 .setView(v)

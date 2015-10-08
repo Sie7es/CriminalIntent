@@ -34,12 +34,4 @@ public class PictureUtils {
         //Read in and create final bitmap
         return BitmapFactory.decodeFile(path, options);
     }
-
-    public static Bitmap getScaledBitmap(String path, Activity activity) {
-        Point size = new Point();
-        activity.getWindowManager().getDefaultDisplay()
-                .getSize(size);
-
-        return getScaledBitmap(path, size.x, size.y);
-    }
 }
