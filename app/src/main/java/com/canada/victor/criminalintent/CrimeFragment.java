@@ -47,12 +47,8 @@ public class CrimeFragment extends Fragment {
     private static final String TIME_FORMAT = "k:m";
     private static final String DIALOG_DATE = "DialogDate";
     private static final String DIALOG_TIME = "DialogTime";
-<<<<<<< HEAD
-    public static final int REQUEST_DATE = 0;
-=======
     private static final String DIALOG_IMAGE_ZOOM = "DialogImageZoom";
     private static final int REQUEST_DATE = 0;
->>>>>>> testing
     private static final int REQUEST_TIME = 1;
     private static final int REQUEST_CONTACT = 2;
     private static final int REQUEST_CONTACT_CALL = 3;
